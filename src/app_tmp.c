@@ -19,6 +19,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_DSRT) || defined(_DSRTLX)
+#  include <DsApplicationInterface.h>
+#endif
 
 #include <infoc.h>
 #include <CarMaker.h>
@@ -28,11 +31,11 @@
 extern const char *SetConnectedIO (const char *io);
 
 static const char *CompileLibs[] = {
-    /* /net/dagobert/local/work.fh/cm100d/src_lib/Portings/linux64/lib/libcar.a */
-    /* /net/dagobert/local/work.fh/cm100d/src_lib/Portings/linux64/lib/libcarmaker.a */
-    /* /net/dagobert/local/work.fh/cm100d/lib/driver/linux64/lib/libipgdriver.a */
-    /* /net/dagobert/local/work.fh/cm100d/lib/road/linux64/lib/libipgroad.a */
-    /* /net/dagobert/local/work.fh/cm100d/lib/tire/linux64/lib/libipgtire.a */
+    /* /opt/ipg/carmaker/linux64-10.2.2/lib/libcar.a */
+    /* /opt/ipg/carmaker/linux64-10.2.2/lib/libcarmaker.a */
+    /* /opt/ipg/carmaker/linux64-10.2.2/lib/libipgdriver.a */
+    /* /opt/ipg/carmaker/linux64-10.2.2/lib/libipgroad.a */
+    /* /opt/ipg/carmaker/linux64-10.2.2/lib/libipgtire.a */
     "libcar.a	CarMaker-Car linux64 10.2.2 2022-04-26",
     "libcarmaker.a	CarMaker linux64 10.2.2 2022-04-26",
     "libipgdriver.a	IPGDriver linux64 10.2 2021-10-21",
@@ -45,23 +48,23 @@ static const char *CompileLibs[] = {
 static const char *CompileFlags[] = {
     "-m64 -fPIC -O3 -DNDEBUG -DLINUX -DLINUX64 -D_GNU_SOURCE",
     "-D_FILE_OFFSET_BITS=64 -DCM_NUMVER=100202",
-    "-DMYMODELS -Wall -Wimplicit -Wmissing-prototypes",
-    "-fno-stack-protector -Wlogical-op",
+    "-I/opt/ipg/carmaker/linux64-10.2.2/include -Wall",
+    "-Wimplicit -Wmissing-prototypes",
     NULL
 };
 
 
 tAppStartInfo   AppStartInfo = {
-    "CarMaker 10.2.2 - Car_Generic",          /* App_Version         */
-    "826",          /* App_BuildVersion    */
-    "fh",     /* App_CompileUser     */
-    "hpc.ipg",         /* App_CompileSystem   */
-    "2022-04-26 11:38:33",  /* App_CompileTime */
+    "Car_Generic <insert.your.version.no>",          /* App_Version         */
+    "1",          /* App_BuildVersion    */
+    "giri",     /* App_CompileUser     */
+    "giri-thinkpad-p15-gen-2i",         /* App_CompileSystem   */
+    "2023-06-27 12:00:27",  /* App_CompileTime */
 
     CompileFlags,                /* App_CompileFlags  */
     CompileLibs,                 /* App_Libs          */
 
-    "",          /* SetVersion        */
+    "10.2.2",          /* SetVersion        */
 
     NULL,           /* TestRunName       */
     NULL,           /* TestRunFName      */
@@ -181,4 +184,11 @@ App_ExportConfig (void)
 }
 
 
+#if defined(_DS1006)
+void
+IPGRT_Board_Init (void)
+{
+    init();
+}
+#endif
 
