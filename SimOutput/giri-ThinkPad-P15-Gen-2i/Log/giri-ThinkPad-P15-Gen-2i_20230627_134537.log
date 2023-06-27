@@ -5,3 +5,6 @@ FIRST_INIT	(internal default used)	2023-06-27 13:45:37
 TIME	0.000
 SIM_END			0s	0m
 IDLE	13:45:38
+TIME	6.614
+SHUTDOWN	CarMaker quick shutdown initiated
+
