@@ -2,7 +2,7 @@
 FileIdent = CarMaker-TestRun 10
 FileCreator = CarMaker 10.0 TEMPLATE
 Description:
-	Approaching a slower vehicle with activated Adaptive Cruise Control
+	Driving with activated Adaptive Cruise Control and reacting to a vehicle sheering through.
 FileClass.Edition = pro
 Vehicle = Examples/DemoCar_ACC
 Trailer =
@@ -27,8 +27,8 @@ TrailerLoad.1.pos = 0 0 0
 TrailerLoad.2.mass = 0
 TrailerLoad.2.pos = 0 0 0
 DrivMan.Cmds:
-	first() ? Qu::CollisionDetected = 0
-DrivMan.Init.Velocity = $ve0=140
+	AccelCtrl.ACC.DesiredTGap = ($tau=1.5)
+DrivMan.Init.Velocity = $ve0=120
 DrivMan.Init.GearNo = 5
 DrivMan.Init.SteerAng = 0
 DrivMan.Init.LaneOffset = 0
@@ -36,14 +36,15 @@ DrivMan.Init.OperatorActive = 1
 DrivMan.Init.OperatorState = drive
 DrivMan.VhclOperator.Kind = IPGOperator 1
 DrivMan.nDMan = 2
-DrivMan.0.Info = Approach
-DrivMan.0.EndCondition = Sensor.Object.RadarL.relvTgt.dtct > 0
+DrivMan.0.Info = Drive
+DrivMan.0.EndCondition = change(Sensor.Object.RadarL.relvTgt.dtct)
 DrivMan.0.LongDyn = Driver 1 0
 DrivMan.0.LatDyn = Driver 0
-DrivMan.1.Info = Follow
-DrivMan.1.EndCondition = CollisionDetected == 1 || (abs(Sensor.Object.RadarL.relvTgt.NearPnt.dv_p) < 0.3 && abs(AccelCtrl.ACC.DesiredAx) < 0.5 && Sensor.Object.RadarL.relvTgt.dtct > 0)
+DrivMan.1.Info = Approach
+DrivMan.1.EndCondition = abs(Sensor.Object.RadarL.relvTgt.RefPnt.dv_p)<0.1 && abs(AccelCtrl.ACC.DesiredAx) < 0.1
 DrivMan.1.Cmds:
-	Eval (Sensor.Object.RadarL.relvTgt.RefPnt.ds_p < 1 && Sensor.Object.RadarL.relvTgt.dtct > 0) ? CollisionDetected = 1
+	Eval first() ? Qu::TTC_Min = 1000
+	Eval ((Car.v > Traffic.T00.LongVel) && (AccelCtrl.ACC.Time2Collision > 0) && (AccelCtrl.ACC.Time2Collision < Qu::TTC_Min)) ? TTC_Min = AccelCtrl.ACC.Time2Collision
 DrivMan.1.LongDyn = Driver 1 0
 DrivMan.1.LatDyn = Driver 0
 Traffic.IFF.FName =
@@ -62,9 +63,9 @@ Traffic.0.Basics.Fr12CoM = 2.15
 Traffic.0.Init.Orientation = 0.0 0.0 0.0
 Traffic.0.RCSClass = RCS_Car
 Traffic.0.DetectMask = 1 1
-Traffic.0.Route = 0 1
-Traffic.0.Init.Road = $st1=200.00 0.0
-Traffic.0.Init.v = $vt1_0=100
+Traffic.0.Route = 2 1
+Traffic.0.Init.Road = $st1=300.00 0
+Traffic.0.Init.v = $vt1=100
 Traffic.0.FreeMotion = 0
 Traffic.0.Lighting = 0
 Traffic.0.UpdRate = 200
@@ -81,7 +82,11 @@ Traffic.0.Motion.D_pitch = 2.3e4
 Traffic.0.Motion.SteerCtrl.Ang_max = 40.0
 Traffic.0.Motion.AnimateHitch = 0
 Traffic.0.Man.TreatAtEnd = FreezePos
-Traffic.0.Man.N = 0
+Traffic.0.Man.N = 3
+Traffic.0.Man.0.Limit = s $s_lc=980
+Traffic.0.Man.1.Limit = t 2
+Traffic.0.Man.1.LatDyn = y 3.75
+Traffic.0.Man.2.Limit = t 50
 DrivMan.OW.Active = 0
 DrivMan.OW.Quantities =
 DrivMan.OW.StartGearNo = 1
@@ -122,7 +127,7 @@ ErrorClass.11.Save = 0
 ErrorClass.11.WarningLimit = 3 5
 Road.FName = Examples/Synthetic/Scenario/Expressway_2Lanes.rd5
 Road.VhclStartPos.Kind = Route
-Road.VhclStartPos = 0.00 0 0
+Road.VhclStartPos = 2000.00 0 0
 Road.VhclRoute = Route_0
 Env.StartTime.Year = 2017
 Env.StartTime.Month = 1

@@ -2,7 +2,7 @@
 FileIdent = CarMaker-TestRun 10
 FileCreator = CarMaker 10.0 TEMPLATE
 Description:
-	Approaching a slower vehicle with activated Adaptive Cruise Control
+	Reaction of vehicle driving with activated Adaptive Cruise Control to speed changings of vehicle driving ahead.
 FileClass.Edition = pro
 Vehicle = Examples/DemoCar_ACC
 Trailer =
@@ -27,8 +27,9 @@ TrailerLoad.1.pos = 0 0 0
 TrailerLoad.2.mass = 0
 TrailerLoad.2.pos = 0 0 0
 DrivMan.Cmds:
+	first() ? AccelCtrl.ACC.DesiredTGap = ($tau=1.0)
 	first() ? Qu::CollisionDetected = 0
-DrivMan.Init.Velocity = $ve0=140
+DrivMan.Init.Velocity = $ve0=120
 DrivMan.Init.GearNo = 5
 DrivMan.Init.SteerAng = 0
 DrivMan.Init.LaneOffset = 0
@@ -41,9 +42,10 @@ DrivMan.0.EndCondition = Sensor.Object.RadarL.relvTgt.dtct > 0
 DrivMan.0.LongDyn = Driver 1 0
 DrivMan.0.LatDyn = Driver 0
 DrivMan.1.Info = Follow
-DrivMan.1.EndCondition = CollisionDetected == 1 || (abs(Sensor.Object.RadarL.relvTgt.NearPnt.dv_p) < 0.3 && abs(AccelCtrl.ACC.DesiredAx) < 0.5 && Sensor.Object.RadarL.relvTgt.dtct > 0)
+DrivMan.1.TimeLimit = 300
+DrivMan.1.EndCondition = CollisionDetected == 1
 DrivMan.1.Cmds:
-	Eval (Sensor.Object.RadarL.relvTgt.RefPnt.ds_p < 1 && Sensor.Object.RadarL.relvTgt.dtct > 0) ? CollisionDetected = 1
+	Eval (Sensor.Object.RadarL.relvTgt.NearPnt.ds_p < 1 && Sensor.Object.RadarL.relvTgt.dtct > 0) ? CollisionDetected = 1
 DrivMan.1.LongDyn = Driver 1 0
 DrivMan.1.LatDyn = Driver 0
 Traffic.IFF.FName =
@@ -63,7 +65,7 @@ Traffic.0.Init.Orientation = 0.0 0.0 0.0
 Traffic.0.RCSClass = RCS_Car
 Traffic.0.DetectMask = 1 1
 Traffic.0.Route = 0 1
-Traffic.0.Init.Road = $st1=200.00 0.0
+Traffic.0.Init.Road = $st1=200.00 0
 Traffic.0.Init.v = $vt1_0=100
 Traffic.0.FreeMotion = 0
 Traffic.0.Lighting = 0
@@ -81,7 +83,11 @@ Traffic.0.Motion.D_pitch = 2.3e4
 Traffic.0.Motion.SteerCtrl.Ang_max = 40.0
 Traffic.0.Motion.AnimateHitch = 0
 Traffic.0.Man.TreatAtEnd = FreezePos
-Traffic.0.Man.N = 0
+Traffic.0.Man.N = 2
+Traffic.0.Man.0.Limit = t 999
+Traffic.0.Man.0.EndCondition = DM.ManNo > 0
+Traffic.0.Man.1.Limit = t 999
+Traffic.0.Man.1.LongSup = sinus 10 10
 DrivMan.OW.Active = 0
 DrivMan.OW.Quantities =
 DrivMan.OW.StartGearNo = 1

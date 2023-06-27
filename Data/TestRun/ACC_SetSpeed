@@ -2,7 +2,7 @@
 FileIdent = CarMaker-TestRun 10
 FileCreator = CarMaker 10.0 TEMPLATE
 Description:
-	Approaching a slower vehicle with activated Adaptive Cruise Control
+	Set the desired speed for Adaptive Cruise Control
 FileClass.Edition = pro
 Vehicle = Examples/DemoCar_ACC
 Trailer =
@@ -26,9 +26,7 @@ TrailerLoad.1.mass = 0
 TrailerLoad.1.pos = 0 0 0
 TrailerLoad.2.mass = 0
 TrailerLoad.2.pos = 0 0 0
-DrivMan.Cmds:
-	first() ? Qu::CollisionDetected = 0
-DrivMan.Init.Velocity = $ve0=140
+DrivMan.Init.Velocity = $ve0=100
 DrivMan.Init.GearNo = 5
 DrivMan.Init.SteerAng = 0
 DrivMan.Init.LaneOffset = 0
@@ -36,52 +34,21 @@ DrivMan.Init.OperatorActive = 1
 DrivMan.Init.OperatorState = drive
 DrivMan.VhclOperator.Kind = IPGOperator 1
 DrivMan.nDMan = 2
-DrivMan.0.Info = Approach
-DrivMan.0.EndCondition = Sensor.Object.RadarL.relvTgt.dtct > 0
+DrivMan.0.Info = drive with constant speed
+DrivMan.0.EndCondition = Time >= 5.0 && abs(Vhcl.v - AccelCtrl.ACC.DesiredSpd) < 0.1
 DrivMan.0.LongDyn = Driver 1 0
-DrivMan.0.LatDyn = Driver 0
-DrivMan.1.Info = Follow
-DrivMan.1.EndCondition = CollisionDetected == 1 || (abs(Sensor.Object.RadarL.relvTgt.NearPnt.dv_p) < 0.3 && abs(AccelCtrl.ACC.DesiredAx) < 0.5 && Sensor.Object.RadarL.relvTgt.dtct > 0)
+DrivMan.0.LatDyn = Driver
+DrivMan.1.Info = change speed and reach new target speed
+DrivMan.1.EndCondition = abs(Vhcl.v - AccelCtrl.ACC.DesiredSpd) < 0.1
 DrivMan.1.Cmds:
-	Eval (Sensor.Object.RadarL.relvTgt.RefPnt.ds_p < 1 && Sensor.Object.RadarL.relvTgt.dtct > 0) ? CollisionDetected = 1
+	Eval first() ? AccelCtrl.ACC.DesiredSpd = ($vet=120)/3.6
+	Eval Qu::AdaptionTime = DM.ManTime
 DrivMan.1.LongDyn = Driver 1 0
 DrivMan.1.LatDyn = Driver 0
 Traffic.IFF.FName =
 Traffic.IFF.Time.Name =
-Traffic.N = 1
-Traffic.SpeedUnit = kmh
-Traffic.0.ObjectKind = Movable
-Traffic.0.ObjectClass = Car
-Traffic.0.Name = T00
-Traffic.0.Info = Compact Car
-Traffic.0.Movie.Geometry = 3D/Vehicles/VW_Beetle_2012_Blue.mobj
-Traffic.0.Color = 1.0 0.0 0.0
-Traffic.0.Basics.Dimension = 4.28 1.82 1.28
-Traffic.0.Basics.Offset = 0.19 0.0
-Traffic.0.Basics.Fr12CoM = 2.15
-Traffic.0.Init.Orientation = 0.0 0.0 0.0
-Traffic.0.RCSClass = RCS_Car
-Traffic.0.DetectMask = 1 1
-Traffic.0.Route = 0 1
-Traffic.0.Init.Road = $st1=200.00 0.0
-Traffic.0.Init.v = $vt1_0=100
-Traffic.0.FreeMotion = 0
-Traffic.0.Lighting = 0
-Traffic.0.UpdRate = 200
-Traffic.0.Motion.Kind = 4Wheel
-Traffic.0.Motion.mass = 1530
-Traffic.0.Motion.I = 470  2080  2160
-Traffic.0.Motion.Overhang = 0.7  0.75
-Traffic.0.Motion.Cf = 1.4e5
-Traffic.0.Motion.Cr = 1.2e5
-Traffic.0.Motion.C_roll = 1.6e5
-Traffic.0.Motion.D_roll = 1.6e4
-Traffic.0.Motion.C_pitch = 2.3e5
-Traffic.0.Motion.D_pitch = 2.3e4
-Traffic.0.Motion.SteerCtrl.Ang_max = 40.0
-Traffic.0.Motion.AnimateHitch = 0
-Traffic.0.Man.TreatAtEnd = FreezePos
-Traffic.0.Man.N = 0
+Traffic.N = 0
+Traffic.SpeedUnit = ms
 DrivMan.OW.Active = 0
 DrivMan.OW.Quantities =
 DrivMan.OW.StartGearNo = 1

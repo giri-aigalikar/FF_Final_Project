@@ -2,7 +2,7 @@
 FileIdent = CarMaker-TestRun 10
 FileCreator = CarMaker 10.0 TEMPLATE
 Description:
-	Approaching a slower vehicle with activated Adaptive Cruise Control
+	Changing the desired time gap while following a vehicle with activated Adaptive Cruise Control
 FileClass.Edition = pro
 Vehicle = Examples/DemoCar_ACC
 Trailer =
@@ -27,25 +27,35 @@ TrailerLoad.1.pos = 0 0 0
 TrailerLoad.2.mass = 0
 TrailerLoad.2.pos = 0 0 0
 DrivMan.Cmds:
-	first() ? Qu::CollisionDetected = 0
-DrivMan.Init.Velocity = $ve0=140
+	first () ? AccelCtrl.ACC.DesiredTGap = ($tau0=2)
+DrivMan.Init.Velocity = $ve0=120
 DrivMan.Init.GearNo = 5
 DrivMan.Init.SteerAng = 0
 DrivMan.Init.LaneOffset = 0
 DrivMan.Init.OperatorActive = 1
 DrivMan.Init.OperatorState = drive
 DrivMan.VhclOperator.Kind = IPGOperator 1
-DrivMan.nDMan = 2
+DrivMan.nDMan = 4
 DrivMan.0.Info = Approach
-DrivMan.0.EndCondition = Sensor.Object.RadarL.relvTgt.dtct > 0
+DrivMan.0.EndCondition = (abs(Sensor.Object.RadarL.relvTgt.RefPnt.dv_p)<0.1) && (abs(AccelCtrl.ACC.DesiredAx)<0.1) && Sensor.Object.RadarL.relvTgt.dtct > 0
 DrivMan.0.LongDyn = Driver 1 0
 DrivMan.0.LatDyn = Driver 0
 DrivMan.1.Info = Follow
-DrivMan.1.EndCondition = CollisionDetected == 1 || (abs(Sensor.Object.RadarL.relvTgt.NearPnt.dv_p) < 0.3 && abs(AccelCtrl.ACC.DesiredAx) < 0.5 && Sensor.Object.RadarL.relvTgt.dtct > 0)
-DrivMan.1.Cmds:
-	Eval (Sensor.Object.RadarL.relvTgt.RefPnt.ds_p < 1 && Sensor.Object.RadarL.relvTgt.dtct > 0) ? CollisionDetected = 1
+DrivMan.1.TimeLimit = 5
 DrivMan.1.LongDyn = Driver 1 0
 DrivMan.1.LatDyn = Driver 0
+DrivMan.2.Info = Change Time Gap
+DrivMan.2.TimeLimit = 0.01
+DrivMan.2.Cmds:
+	Eval AccelCtrl.ACC.DesiredTGap = ($tau=1)
+DrivMan.2.LongDyn = Driver 1 0
+DrivMan.2.LatDyn = Driver 0
+DrivMan.3.Info = Get back to constant following
+DrivMan.3.EndCondition = abs(Sensor.Object.RadarL.relvTgt.RefPnt.dv_p)<0.1 && abs(AccelCtrl.ACC.DesiredAx) < 0.1
+DrivMan.3.Cmds:
+	Eval Qu::AdaptionTime = DM.ManTime
+DrivMan.3.LongDyn = Driver 1 0
+DrivMan.3.LatDyn = Driver 0
 Traffic.IFF.FName =
 Traffic.IFF.Time.Name =
 Traffic.N = 1

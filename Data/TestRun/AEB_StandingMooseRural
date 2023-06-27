@@ -2,9 +2,9 @@
 FileIdent = CarMaker-TestRun 10
 FileCreator = CarMaker 10.0 TEMPLATE
 Description:
-	Approaching a slower vehicle with activated Adaptive Cruise Control
+	The TestRun shows a braking maneuver, because of a standing Moose on the road.
 FileClass.Edition = pro
-Vehicle = Examples/DemoCar_ACC
+Vehicle = Examples/DemoCar_BA
 Trailer =
 Tire.0 =
 Tire.1 =
@@ -26,67 +26,44 @@ TrailerLoad.1.mass = 0
 TrailerLoad.1.pos = 0 0 0
 TrailerLoad.2.mass = 0
 TrailerLoad.2.pos = 0 0 0
-DrivMan.Cmds:
-	first() ? Qu::CollisionDetected = 0
-DrivMan.Init.Velocity = $ve0=140
-DrivMan.Init.GearNo = 5
+DrivMan.Init.Velocity = 0
+DrivMan.Init.GearNo = 0
 DrivMan.Init.SteerAng = 0
 DrivMan.Init.LaneOffset = 0
 DrivMan.Init.OperatorActive = 1
 DrivMan.Init.OperatorState = drive
 DrivMan.VhclOperator.Kind = IPGOperator 1
 DrivMan.nDMan = 2
-DrivMan.0.Info = Approach
-DrivMan.0.EndCondition = Sensor.Object.RadarL.relvTgt.dtct > 0
+DrivMan.0.Info = Driving
+DrivMan.0.EndCondition = Time>=5 && Car.v <=0.01
 DrivMan.0.LongDyn = Driver 1 0
 DrivMan.0.LatDyn = Driver 0
-DrivMan.1.Info = Follow
-DrivMan.1.EndCondition = CollisionDetected == 1 || (abs(Sensor.Object.RadarL.relvTgt.NearPnt.dv_p) < 0.3 && abs(AccelCtrl.ACC.DesiredAx) < 0.5 && Sensor.Object.RadarL.relvTgt.dtct > 0)
-DrivMan.1.Cmds:
-	Eval (Sensor.Object.RadarL.relvTgt.RefPnt.ds_p < 1 && Sensor.Object.RadarL.relvTgt.dtct > 0) ? CollisionDetected = 1
+DrivMan.1.TimeLimit = 3
 DrivMan.1.LongDyn = Driver 1 0
 DrivMan.1.LatDyn = Driver 0
 Traffic.IFF.FName =
 Traffic.IFF.Time.Name =
 Traffic.N = 1
 Traffic.SpeedUnit = kmh
-Traffic.0.ObjectKind = Movable
-Traffic.0.ObjectClass = Car
-Traffic.0.Name = T00
-Traffic.0.Info = Compact Car
-Traffic.0.Movie.Geometry = 3D/Vehicles/VW_Beetle_2012_Blue.mobj
-Traffic.0.Color = 1.0 0.0 0.0
-Traffic.0.Basics.Dimension = 4.28 1.82 1.28
-Traffic.0.Basics.Offset = 0.19 0.0
-Traffic.0.Basics.Fr12CoM = 2.15
-Traffic.0.Init.Orientation = 0.0 0.0 0.0
-Traffic.0.RCSClass = RCS_Car
+Traffic.0.ObjectKind = StatWithName
+Traffic.0.ObjectClass = Animal
+Traffic.0.Name = Moose
+Traffic.0.Info = Moose
+Traffic.0.Movie.Geometry = 3D/Animals/Moose.manim
+Traffic.0.Color = 1.0 0.65 0.0
+Traffic.0.Basics.Dimension = 2.55 0.65 1.1
+Traffic.0.Basics.Offset = 0.7 0
+Traffic.0.Basics.Fr12CoM = 1.26
+Traffic.0.Init.Orientation = 0.0 0.0 90
+Traffic.0.RCSClass = RCS_Unknown
 Traffic.0.DetectMask = 1 1
 Traffic.0.Route = 0 1
-Traffic.0.Init.Road = $st1=200.00 0.0
-Traffic.0.Init.v = $vt1_0=100
-Traffic.0.FreeMotion = 0
-Traffic.0.Lighting = 0
-Traffic.0.UpdRate = 200
-Traffic.0.Motion.Kind = 4Wheel
-Traffic.0.Motion.mass = 1530
-Traffic.0.Motion.I = 470  2080  2160
-Traffic.0.Motion.Overhang = 0.7  0.75
-Traffic.0.Motion.Cf = 1.4e5
-Traffic.0.Motion.Cr = 1.2e5
-Traffic.0.Motion.C_roll = 1.6e5
-Traffic.0.Motion.D_roll = 1.6e4
-Traffic.0.Motion.C_pitch = 2.3e5
-Traffic.0.Motion.D_pitch = 2.3e4
-Traffic.0.Motion.SteerCtrl.Ang_max = 40.0
-Traffic.0.Motion.AnimateHitch = 0
-Traffic.0.Man.TreatAtEnd = FreezePos
-Traffic.0.Man.N = 0
+Traffic.0.Init.Road = 270.00 -2
 DrivMan.OW.Active = 0
 DrivMan.OW.Quantities =
-DrivMan.OW.StartGearNo = 1
+DrivMan.OW.StartGearNo =
 DrivMan.OW.StartVelocity =
-DrivMan.OW.GasMax = 0.5
+DrivMan.OW.GasMax =
 DrivMan.OW.RefCh = Time
 DrivMan.OW.ConsiderRoadSigns = 0
 DrivMan.OW.sRoute.Offset = 0
@@ -120,11 +97,103 @@ ErrorClass.10.WarningLimit = 3 5
 ErrorClass.11.Action = abort
 ErrorClass.11.Save = 0
 ErrorClass.11.WarningLimit = 3 5
-Road.FName = Examples/Synthetic/Scenario/Expressway_2Lanes.rd5
+Road.FileIdent = IPGRoad 10.0
+Road.LibVersion = 10.0
+Road.Country = DEU DEU
+Road.nLinks = 1
+Road.nJunctions = 0
+Road.nObjects = 56
+Road.nRoutes = 2
+Road.RoadNetworkLength = 674.532925199433
+Road.BBox = -10 338.534827861233 -515.955946170329 21 -23 11
+Road.Route.0.Length = 674.532925199433
+Road.Route.1.Length = 674.532925199433
+Road.RST.Unit = kmh
+Road.RST = 50 100 -1 30 70 50 -1 -1
+Road.Movie = 0.2 1 0.02 25 25 0 0
+Road.PathMode = -1
+Road.Link.0.ID = 0
+Road.Link.0.Node0 = 0 0 0 0
+Road.Link.0.Node1 = 320.108338986924 -498.885282463777 0 310
+Road.Link.0.RST = Countryroad
+Road.Link.0.RL.ID = 1
+Road.Link.0.Seg.0.ID = 2
+Road.Link.0.Seg.0.Type = Straight
+Road.Link.0.Seg.0.Param = 100 0 0 0 0 0 0 0
+Road.Link.0.Seg.1.ID = 3
+Road.Link.0.Seg.1.Type = TurnRight
+Road.Link.0.Seg.1.Param = 100 75 0 0 0 0 0 0
+Road.Link.0.Seg.2.ID = 4
+Road.Link.0.Seg.2.Type = Straight
+Road.Link.0.Seg.2.Param = 400 0 0 0 0 0 0 0
+Road.Link.0.Seg.3.ID = 5
+Road.Link.0.Seg.3.Type = TurnLeft
+Road.Link.0.Seg.3.Param = 100 25 0 0 0 0 0 0
+Road.Link.0.LaneSection.0.ID = 6
+Road.Link.0.LaneSection.0.Start = 0
+Road.Link.0.LaneSection.0.LaneL.0.ID = 7
+Road.Link.0.LaneSection.0.LaneL.0 = 0 3 3 0 0 0 0
+Road.Link.0.LaneSection.0.LaneL.0.ARP = 66 67 68 69 70 71
+Road.Link.0.LaneSection.0.LaneL.1.ID = 8
+Road.Link.0.LaneSection.0.LaneL.1 = 2 8 8 5 0 0 0
+Road.Link.0.LaneSection.0.LaneR.0.ID = 9
+Road.Link.0.LaneSection.0.LaneR.0 = 0 3 3 0 0 0 0
+Road.Link.0.LaneSection.0.LaneR.0.ARP = 72 73 74 75 76 77
+Road.Link.0.LaneSection.0.LaneR.1.ID = 10
+Road.Link.0.LaneSection.0.LaneR.1 = 2 8 8 5 0 0 0
+Road.Link.0.ElevationProfile.ID = 23
+Road.Link.0.ElevationProfile.Params = 0 0
+Road.Link.0.ElevationProfile:
+	58 -1 0 0 0 0 0
+	59 -1 224.899693899575 0 0 0 0
+	60 -1 236.899693899575 0 0 -0.18 -0.03
+	61 -1 624.899693899575 0 0 -11.82 -0.03
+	62 -1 636.899693899575 0 0 -12 0
+	63 -1 674.532925199433 0 0 -12 0
+Road.LanePath.0 = 44 7 2 10 0.1 0.1
+Road.LanePath.1 = 45 9 2 10 0.1 0.1
+Route.0.ID = 42
+Route.0.Name = Route
+Route.0.DrvPath.ID = 46
+Route.0.DrvPath:
+	45
+Route.1.ID = 43
+Route.1.Name = ReverseRoute
+Route.1.DrvPath.ID = 47
+Route.1.DrvPath:
+	44
+Road.RL.1.SignPlate.0.ID = 32 1
+Road.RL.1.SignPlate.0 = 80 0 -3.5 0 0.7 0.7 0 1.5 0 ""
+Road.RL.1.SignPlate.0.Material.0 = Textures/Signs/Moose_Traffic_Sign_NO.png 0 0 0 0 0 0 1 1 0 0 0
+Road.RL.1.TreeStrip.0.ID = 33 1
+Road.RL.1.TreeStrip.0 = 0 0 630 0 3 1 15 15 1 1 0.1 0.1
+Road.RL.1.TreeStrip.0.Options = Textures/Trees/Pinetree.png
+Road.RL.1.TreeStrip.1.ID = 34 1
+Road.RL.1.TreeStrip.1 = 0 0 630 0 -3 -1 15 15 1 1 0.1 0.1
+Road.RL.1.TreeStrip.1.Options = Textures/Trees/Pinetree.png
+Road.RL.1.TreeStrip.2.ID = 35 1
+Road.RL.1.TreeStrip.2 = 10 0 640 0 3 1 20 15 1.3 1 0.1 0.1
+Road.RL.1.TreeStrip.2.Options = Textures/Trees/Pinetree.png
+Road.RL.1.TreeStrip.3.ID = 36 1
+Road.RL.1.TreeStrip.3 = 10 0 640 0 -3 -1 20 15 1.3 1 0.1 0.1
+Road.RL.1.TreeStrip.3.Options = Textures/Trees/Pinetree.png
+Road.RL.1.TreeStrip.4.ID = 37 1
+Road.RL.1.TreeStrip.4 = 15 0 645 0 -3 -1 25 5 0.8 1 0.1 0.1
+Road.RL.1.TreeStrip.4.Options = Textures/Trees/Pinetree.png
+Road.RL.1.TreeStrip.5.ID = 38 1
+Road.RL.1.TreeStrip.5 = 15 0 645 0 3 1 25 5 0.8 1 0.1 0.1
+Road.RL.1.TreeStrip.5.Options = Textures/Trees/Pinetree.png
+Road.RL.1.RoadMarking.0.ID = 39 1
+Road.RL.1.RoadMarking.0 = 0 0 0 1 0 0 0.2 0 2 0 0 3 6 1 1 4 ""
+Road.RL.1.RoadMarking.1.ID = 40 1
+Road.RL.1.RoadMarking.1 = 0 0 0 1 -0.1 1 0.15 0 1 0 0 0 0 1 1 4 ""
+Road.RL.1.RoadMarking.2.ID = 41 1
+Road.RL.1.RoadMarking.2 = 0 0 0 1 0.1 -1 0.15 0 1 0 0 0 0 1 1 4 ""
+Road.MaxUsedObjId = 77
 Road.VhclStartPos.Kind = Route
 Road.VhclStartPos = 0.00 0 0
-Road.VhclRoute = Route_0
-Env.StartTime.Year = 2017
+Road.VhclRoute = Route
+Env.StartTime.Year = 2014
 Env.StartTime.Month = 1
 Env.StartTime.Day = 1
 Env.StartTime.Hour = 12
@@ -175,7 +244,7 @@ Driver.ParamIdent = IPGDriver 5
 Driver.Mode = std
 Driver.Long.DrivMaxSpeed = 0
 Driver.Long.CruisingSpeed = 150
-Driver.CornerCutCoef = 0.5
+Driver.CornerCutCoef = 0.1
 Driver.ConsiderTraffic = 0
 Driver.Traffic.TimeGapMin = 1.8
 Driver.Traffic.TimeGapMax = 5.0
